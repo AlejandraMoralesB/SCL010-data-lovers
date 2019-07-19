@@ -1,17 +1,26 @@
-window.addEventListener("load", () => {
-  return showPokemon(allPokemon);
-});
+
+let allPokemon;
+
+//TRAER LA DATA FETCH
+fetch("https://raw.githubusercontent.com/AlejandraMoralesB/SCL010-data-lovers/master/src/data/pokemon/pokemon.json")
+.then(function(response) {
+return response.json();
+})
+.then(function(data) {
+allPokemon= data.pokemon;
+//console.log(allPokemon);
+showPokemon(allPokemon);
+})
+;
 
 //convertimos a objeto el array
-const allPokemon = window.POKEMON.pokemon;
 const container = document.getElementById("cards-container");
 const pokemonPorcent = document.getElementById("pokemon-porcent");
 document.getElementById("pokemon-porcent").style.display = "none"
 
-
 let showPokemon = (arr) => {
   //creamos las cartas
-  for (let i = 0 ; i < arr.length; i++){
+  for (let i = 0 ; i < arr.length ; i++){
 
     let pokeCard = document.createElement("div");
     pokeCard.setAttribute("value" , arr[i].id);
@@ -122,11 +131,9 @@ const sortPokemon = document.getElementById("sort-Pokemon");
 sortPokemon.addEventListener("change", ()=>{
   container.innerHTML="";
   pokemonPorcent.innerHTML="";
-  let data =window.POKEMON.pokemon;
   let condition = sortPokemon.options[sortPokemon.selectedIndex].value;
-  //console.log(condition);
-  window.sortBy(data, condition);
-  showPokemon(data);
+  window.sortBy(allPokemon, condition);
+  showPokemon(allPokemon);
   });
 
 //filtrar por tipo
@@ -138,14 +145,15 @@ selectType.addEventListener("change", ()=> {
   // borra contenido de section
   container.innerHTML = "";
   // crea nuevos divs en base a array
-  let pokeArray = window.filterTypes(window.data, condition);
+  let pokeArray = window.filterTypes(allPokemon, condition);
   pokemonPorcent.innerHTML="<p>¡Un dato interesante!</p"
-  pokemonPorcent.innerHTML+="El " + window.calcPercent(pokeArray,window.data) + "% del total de Pokémon de la región de Kanto corresponde al tipo " + conditionText;
+  pokemonPorcent.innerHTML+="El " + window.calcPercent(pokeArray,allPokemon) + "% del total de Pokémon de la región de Kanto corresponde al tipo " + conditionText;
   container.className = "pokemon-porcent";
   document.getElementById("pokemon-porcent").style.display = "block";
   showPokemon(pokeArray);
 } 
 );
+
 
 //filtrar por Huevo de pokemon 
 const selectTypeegg = document.getElementById("egg");
@@ -155,16 +163,16 @@ selectTypeegg.addEventListener("change", ()=> {
   let conditionText = selectTypeegg.options[selectTypeegg.selectedIndex].text;
   // borra contenido de section
   // crea nuevos divs en base a array
-  let pokeArray = window.filterTypesegg(window.data, condition);
+  let pokeArray = window.filterTypesegg(allPokemon, condition);
   for (let i=0; i < pokeArray.length; i++){
     container.innerHTML = "";
     pokemonPorcent.innerHTML="<p>¡Un dato interesante!</p"
     if (condition === "Not in Eggs") {
-      pokemonPorcent.innerHTML+="El " + window.calcPercent(pokeArray,window.data) + "% de los Pokémon de la región de Kanto no eclosionan en huevos" 
+      pokemonPorcent.innerHTML+="El " + window.calcPercent(pokeArray,allPokemon) + "% de los Pokémon de la región de Kanto no eclosionan en huevos" 
       document.getElementById("pokemon-porcent").style.display = "block";  
     }
     else {
-      pokemonPorcent.innerHTML+="El " + window.calcPercent(pokeArray,window.data) + "% de los Pokémon de la región de Kanto eclosionan en huevos de " + conditionText;
+      pokemonPorcent.innerHTML+="El " + window.calcPercent(pokeArray,allPokemon) + "% de los Pokémon de la región de Kanto eclosionan en huevos de " + conditionText;
       document.getElementById("pokemon-porcent").style.display = "block";  
     }
     showPokemon(pokeArray);
